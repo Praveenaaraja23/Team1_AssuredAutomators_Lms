@@ -41,4 +41,7 @@ public class ConfigReader {
             throw new RuntimeException("Failed to update config.properties", e);
         }
     }
+    public static String getBaseUrl() {
+        return properties.getProperty("baseUrl");
+    }
 	}

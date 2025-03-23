@@ -1,12 +1,7 @@
 package models;
 
 public class Batch {
-//	"batchDescription":
-//		"string",
-//		"batchName": "string",
-//		"batchNoOfClasses": 0,
-//		"batchStatus": "string",
-//		"programId": 0
+
 	private String batchDescription;
 	private String batchName;
 	private String batchNoOfClasses;
