@@ -1,6 +1,8 @@
 package endpoints;
 
 public enum EndPoints {
+	//Login end points
+	USER_SIGN_IN("/login"),
 	
 	//Batch end points
 	CREATE_BATCH("/batches"),

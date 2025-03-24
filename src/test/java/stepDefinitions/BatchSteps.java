@@ -11,6 +11,7 @@ import context.ScenarioContext;
 import endpoints.EndPoints;
 import io.cucumber.java.en.*;
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import models.Batch;
@@ -23,6 +24,7 @@ public class BatchSteps {
 
 	private final ScenarioContext scenarioContext;
 	private RequestSpecification request;
+	String endPoint;
 
 	public BatchSteps(ScenarioContext scenarioContext) throws IOException {
 		this.scenarioContext = scenarioContext;
@@ -38,6 +40,7 @@ public class BatchSteps {
 	@Given("Admin creates POST Request  with valid data in request body")
 	public void admin_creates_post_request_with_valid_data_in_request_body() {
 		LoggerLoad.info("Admin sets post request");
+		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 	}
 
 	@When("Admin sends HTTPS Request with data from row {string}")
@@ -53,11 +56,10 @@ public class BatchSteps {
 					Batch batch = new Batch();
 					batch.setbatchDescription(row.get("BatchDescription"));
 					batch.setbatchName(row.get("BatchName"));
-					batch.setbatchNoOfClasses(row.get("NoOfClasses"));
+					batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
 					batch.setbatchStatus(row.get("BatchStatus"));
-					batch.setprogramId(row.get("ProgramId"));// To do get Program id from context
-
-					String endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
+					batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
+					
 					Response response = request.given().contentType("application/json").body(batch).log().body()
 							.post(endPoint);
 
@@ -80,16 +82,43 @@ public class BatchSteps {
 	public void the_response_status_should_be_equal_to_expected_status() {
 		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
+		
+		String expContentType = scenarioContext.getRowData().get("ContentType");
+		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
+		ResponseValidator.validateContentType(scenarioContext.getResponse().getContentType(), expContentType);
 
 		if (expStatusCode == 201 && actStatusCode == 201) {
 			int batchId = Integer.parseInt(scenarioContext.getResponse().jsonPath().getString("batchId"));
 			GlobalContext.addBatchId(batchId);
 			LoggerLoad.info("batchId :" + batchId);
+			
+			
+			  JsonPath jsonPath = scenarioContext.getResponse().jsonPath();
+			  Map<String, String> expRow = scenarioContext.getRowData();
+			  
+			// Validate Data type
+			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchId", Integer.class);
+			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchName", String.class);
+			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchDescription", String.class);
+			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchStatus", String.class);
+			ResponseValidator.validateDataType(scenarioContext.getResponse(), "programName", String.class);
+			ResponseValidator.validateDataType(scenarioContext.getResponse(),  "batchNoOfClasses", Integer.class);
+			ResponseValidator.validateDataType(scenarioContext.getResponse(), "programId", Integer.class);
+			
+			// Validate Data
+			ResponseValidator.validateData(jsonPath.getString("batchName"), expRow.get("BatchName"));
+			ResponseValidator.validateData(jsonPath.getString("batchDescription"), expRow.get("BatchDescription"));
+			ResponseValidator.validateData(jsonPath.getString("batchNoOfClasses"), expRow.get("NoOfClasses"));
+			ResponseValidator.validateData(jsonPath.getString("batchStatus"), expRow.get("BatchStatus"));
+		    //ResponseValidator.validateData(jsonPath.getString("programName"), expRow.get("programName"));
+			ResponseValidator.validateData(jsonPath.getString("programId"), expRow.get("ProgramId"));
 		}
-
-		String expContentType = scenarioContext.getRowData().get("ContentType");
-		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
-		ResponseValidator.validateContentType(scenarioContext.getResponse().getContentType(), expContentType);
+		
 	}
-
+	
+	@Given("Admin sets Authorization to No  Auth, creates POST Request  with valid data in request body")
+	public void admin_sets_authorization_to_no_auth_creates_post_request_with_valid_data_in_request_body() {
+		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
+		request = RestAssured.given();
+	}
 }
