@@ -33,10 +33,10 @@ Feature: Create Batch API
     
     Examples:
     | Scenario 			    														 |
-  	| CreateBatchWithValidDataAndNoAuth							 |
+  	| CreateBatchWithNoAuth													 |
     
   Scenario Outline: Check if admin able to create a batch with invalid endpoint
-    Given Admin creates POST Request  with valid data in request body 
+    Given Admin creates POST Request  with valid data in request body with invalid endpoint
     When Admin sends HTTPS Request with data from row "<Scenario>"
     Then the response status should be equal to ExpectedStatus	
     

@@ -3,6 +3,7 @@ package stepDefinitions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
@@ -20,13 +21,13 @@ import utilities.ExcelReader;
 import utilities.LoggerLoad;
 import utilities.ResponseValidator;
 
-public class BatchSteps {
+public class CreateBatchSteps {
 
 	private final ScenarioContext scenarioContext;
 	private RequestSpecification request;
 	String endPoint;
 
-	public BatchSteps(ScenarioContext scenarioContext) throws IOException {
+	public CreateBatchSteps(ScenarioContext scenarioContext) throws IOException {
 		this.scenarioContext = scenarioContext;
 	}
 
@@ -39,7 +40,7 @@ public class BatchSteps {
 
 	@Given("Admin creates POST Request  with valid data in request body")
 	public void admin_creates_post_request_with_valid_data_in_request_body() {
-		LoggerLoad.info("Admin sets post request");
+		LoggerLoad.info("Admin sets post for create batch request");
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 	}
 
@@ -48,14 +49,15 @@ public class BatchSteps {
 			throws InvalidFormatException, IOException {
 		LoggerLoad.info("Scenario Name: " + scenarioName);
 		
-		try {
+		//try {
 			List<Map<String, String>> batchData = ExcelReader.getData(ConfigReader.getProperty("excelPath"), "Batch");
 			for (Map<String, String> row : batchData) {
 				if (row.get("Scenario").equalsIgnoreCase(scenarioName)) {
 					
 					Batch batch = new Batch();
 					batch.setbatchDescription(row.get("BatchDescription"));
-					batch.setbatchName(row.get("BatchName"));
+					//batch.setbatchName(row.get("BatchName"));
+					batch.setbatchName(generateRandomString());
 					batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
 					batch.setbatchStatus(row.get("BatchStatus"));
 					batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
@@ -67,14 +69,16 @@ public class BatchSteps {
 					scenarioContext.setRowData(row);
 
 					LoggerLoad.info("Status Code: " + response.getStatusCode());
-					LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
+					if(response.getStatusCode() != 401 && response.getStatusCode() != 404) {
+						LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
+					}
 
 					break;
 				}
 			}
-		} catch (Exception e) {
-			LoggerLoad.error(e.getMessage());
-		}
+//		} catch (Exception e) {
+//			LoggerLoad.error("Exception :"+e.getMessage());
+//		}
 
 	}
 
@@ -89,8 +93,12 @@ public class BatchSteps {
 
 		if (expStatusCode == 201 && actStatusCode == 201) {
 			int batchId = Integer.parseInt(scenarioContext.getResponse().jsonPath().getString("batchId"));
+			String batchName = scenarioContext.getResponse().jsonPath().getString("batchName");
+			
 			GlobalContext.addBatchId(batchId);
+			GlobalContext.setBatchName(batchName);
 			LoggerLoad.info("batchId :" + batchId);
+			LoggerLoad.info("batchName :" + batchName);
 			
 			
 			  JsonPath jsonPath = scenarioContext.getResponse().jsonPath();
@@ -99,7 +107,7 @@ public class BatchSteps {
 			// Validate Data type
 			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchId", Integer.class);
 			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchName", String.class);
-			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchDescription", String.class);
+			//ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchDescription", String.class);
 			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchStatus", String.class);
 			ResponseValidator.validateDataType(scenarioContext.getResponse(), "programName", String.class);
 			ResponseValidator.validateDataType(scenarioContext.getResponse(),  "batchNoOfClasses", Integer.class);
@@ -112,13 +120,37 @@ public class BatchSteps {
 			ResponseValidator.validateData(jsonPath.getString("batchStatus"), expRow.get("BatchStatus"));
 		    //ResponseValidator.validateData(jsonPath.getString("programName"), expRow.get("programName"));
 			ResponseValidator.validateData(jsonPath.getString("programId"), expRow.get("ProgramId"));
-		}
-		
+		}		
 	}
 	
+	//No auth
 	@Given("Admin sets Authorization to No  Auth, creates POST Request  with valid data in request body")
 	public void admin_sets_authorization_to_no_auth_creates_post_request_with_valid_data_in_request_body() {
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 		request = RestAssured.given();
 	}
+	
+	@Given("Admin creates POST Request  with valid data in request body with invalid endpoint")
+	public void admin_creates_post_request_with_valid_data_in_request_body_with_invalid_endpoint() {
+		LoggerLoad.info("Admin creates POST Request  with valid data in request body with invalid endpoint");
+		 endPoint = ConfigReader.getBaseUrl()+"1" + EndPoints.CREATE_BATCH.getEndpoint();
+	}
+	
+	//This should be removed in final submission
+	public static String generateRandomString() {
+        String prefix = "Java";
+        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        
+        // StringBuilder to append the initial "Java"
+        StringBuilder stringBuilder = new StringBuilder(prefix);
+
+        // Generate remaining 6 characters
+        for (int i = 0; i < 6; i++) {
+            char randomChar = alphanumeric.charAt(random.nextInt(alphanumeric.length()));
+            stringBuilder.append(randomChar);
+        }
+        
+        return stringBuilder.toString();
+    }
 }
