@@ -7,8 +7,17 @@ public class GlobalContext {
     private static String token;
     private static List<Integer> programIds = new ArrayList<>();
     private static List<Integer> batchIds = new ArrayList<>();
+    private static String batchName;
     
-    public static void setToken(String token) {
+    public static String getBatchName() {
+		return batchName;
+	}
+
+	public static void setBatchName(String batchName) {
+		GlobalContext.batchName = batchName;
+	}
+
+	public static void setToken(String token) {
         GlobalContext.token = token;
     }
 
