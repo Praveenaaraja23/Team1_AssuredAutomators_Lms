@@ -30,8 +30,11 @@ public enum EndPoints {
 	UPDATE_USER_ROLEID("/users/roleId/{userID}"),
     ASSIGN_UPDATE_USER_ROLE_PROGRAM_BATCH_STATUS("/users/roleProgramBatchStatus/{userId}"),
     UPDATE_USER_LOGIN_STATUS("/users/userLogin/{userId}"),
-    DELETE_USER("/users/{userID}");
-  
+    DELETE_USER("/users/{userID}"),
+
+	//logout end points
+	LOGOUT("/logoutlms");
+	
 	
     private final String endpoint;
 
