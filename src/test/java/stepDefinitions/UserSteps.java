@@ -18,6 +18,7 @@ import models.UserRoleMap;
 import utilities.ConfigReader;
 import utilities.ExcelReader;
 import utilities.LoggerLoad;
+import utilities.ResponseValidator;
 
 public class UserSteps {
 
@@ -91,7 +92,9 @@ public class UserSteps {
 					scenarioContext.setRowData(row);
 
 					LoggerLoad.info("Status Code: " + response.getStatusCode());
-					LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
+					if(response.getStatusCode() != 401 && response.getStatusCode() != 404) {
+						LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
+					}
 
 					break;
 				}
@@ -103,7 +106,11 @@ public class UserSteps {
 
 	@Then("the response status should be equal to ExpectedStatus for create user")
 	public void the_response_status_should_be_equal_to_expected_status_for_create_user() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
+		int actStatusCode = scenarioContext.getResponse().getStatusCode();
+		
+		String expContentType = scenarioContext.getRowData().get("ContentType");
+		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
+		ResponseValidator.validateContentType(scenarioContext.getResponse().getContentType(), expContentType);
 	}
 }
