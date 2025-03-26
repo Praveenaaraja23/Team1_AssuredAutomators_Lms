@@ -36,57 +36,59 @@ public class GetBatchesSteps {
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.GET_ALL_BATCHES.getEndpoint();
 	}
 
-	@When("Admin sends HTTPS Request with endpoint")
-	public void admin_sends_https_request_with_endpoint() {
+	@When("Admin sends HTTPS Request with endpoint for get batches")
+	public void admin_sends_https_request_with_endpoint_for_get_batches() {
 		Response response = request.given().contentType("application/json").get(endPoint);
 		scenarioContext.setResponse(response);
 		LoggerLoad.info("response : "+ response.asString());
 	}
 
-	@Then("Admin receives {int} OK Status with response body.")
-	public void admin_receives_ok_status_with_response_body(Integer expStatusCode) {
+	@Then("Admin receives {int} OK Status with response body for get batches.")
+	public void admin_receives_ok_status_with_response_body_for_get_batches(Integer expStatusCode) {
 		
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
 		LoggerLoad.info("actStatusCode : "+actStatusCode);
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
 	    
 	}
+	
 	// sending get all batches request with invalid end point
-	@Given("Admin creates GET Request with invalid endpoint fot get batches")
-	public void admin_creates_get_request_with_invalid_endpoint_fot_get_batches() {
+	@Given("Admin creates GET Request with invalid endpoint for get batches")
+	public void admin_creates_get_request_with_invalid_endpoint_for_get_batches() {
 		LoggerLoad.info("Admin sets GET request for get batches with in valid endpoint");
 		 endPoint = ConfigReader.getBaseUrl()+"1" + EndPoints.GET_ALL_BATCHES.getEndpoint();
 	}
 
-	@When("Admin sends HTTPS Request with  invalid endpoint")
-	public void admin_sends_https_request_with_invalid_endpoint() {
+	@When("Admin sends HTTPS Request with  invalid endpoint for get batches")
+	public void admin_sends_https_request_with_invalid_endpoint_for_get_batches() {
 		Response response = request.given().contentType("application/json").get(endPoint);
 		scenarioContext.setResponse(response);
 		LoggerLoad.info("response : "+ response.asString());
 	}
 
-	@Then("Admin receives {int} status with error message Not Found")
-	public void admin_receives_status_with_error_message_not_found(Integer expStatusCode) {
+	@Then("Admin receives {int} status with error message Not Found for get batches")
+	public void admin_receives_status_with_error_message_not_found_for_get_batches(Integer expStatusCode) {
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
 		LoggerLoad.info("actStatusCode : "+actStatusCode);
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
 	}
+	
 	//No auth for get batches
-	@Given("Admin sets no Authorization and creates GET Request")
-	public void admin_sets_no_authorization_and_creates_get_request() {
+	@Given("Admin sets no Authorization and creates GET Request for get batches")
+	public void admin_sets_no_authorization_and_creates_get_request_for_get_batches() {
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.GET_ALL_BATCHES.getEndpoint();
 			request = RestAssured.given();
 	}
 
-	@When("Admin sends HTTPS Request with No auth, valid endpoint")
-	public void admin_sends_https_request_with_no_auth_valid_endpoint() {
+	@When("Admin sends HTTPS Request with No auth, valid endpoint for get batches")
+	public void admin_sends_https_request_with_no_auth_valid_endpoint_for_get_batches() {
 		Response response = request.given().contentType("application/json").get(endPoint);
 		scenarioContext.setResponse(response);
 		LoggerLoad.info("response : "+ response.asString());
 	}
 
-	@Then("Admin receives {int} status with error message Unauthorized.")
-	public void admin_receives_status_with_error_message_unauthorized(Integer expStatusCode) {
+	@Then("Admin receives {int} status with error message Unauthorized for get batches")
+	public void admin_receives_status_with_error_message_unauthorized_for_get_batches(Integer expStatusCode) {
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
 		LoggerLoad.info("actStatusCode : "+actStatusCode);
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);

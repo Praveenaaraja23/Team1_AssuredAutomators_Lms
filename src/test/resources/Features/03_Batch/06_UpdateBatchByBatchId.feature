@@ -8,7 +8,7 @@ Feature: UpdateBatchByBatchId
   Scenario Outline:Check if admin able to update a Batch with valid batchID and mandatory fields in request body
 
     Given Admin creates PUT Request with valid BatchId and Data 
-    When Admin sends PUT Request with data from row "<Scenario>"
+    When Admin sends PUT Request with data from row "<Scenario>" for update batch
     Then the response status should be equal to ExpectedStatus for update batch
 
 
