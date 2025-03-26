@@ -7,7 +7,7 @@ public class GlobalContext {
     private static String token;
     private static List<Integer> programIds = new ArrayList<>();
     private static List<Integer> batchIds = new ArrayList<>();
-    
+    private static List<Integer> classIds = new ArrayList<>();
     public static void setToken(String token) {
         GlobalContext.token = token;
     }
@@ -36,5 +36,15 @@ public class GlobalContext {
             return batchIds.get(index);
         }
         throw new IndexOutOfBoundsException("Invalid index for batchIds");
+    }
+    public static void addClassId(int classId) {
+        classIds.add(classId);
+    }
+    
+    public static int getClassId(int index) {
+        if (index >= 0 && index < classIds.size()) {
+            return classIds.get(index);
+        }
+        throw new IndexOutOfBoundsException("Invalid index for classIds");
     }
 }

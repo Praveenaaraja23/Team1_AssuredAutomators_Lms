@@ -82,7 +82,6 @@ public class BatchSteps {
 	public void the_response_status_should_be_equal_to_expected_status() {
 		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
-		
 		String expContentType = scenarioContext.getRowData().get("ContentType");
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
 		ResponseValidator.validateContentType(scenarioContext.getResponse().getContentType(), expContentType);

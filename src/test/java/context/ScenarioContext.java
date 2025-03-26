@@ -4,13 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 public class ScenarioContext {
 
     private Map<String, Object> scenarioContext = new HashMap<>();
     private Response response;
     private Map<String, String> rowData;
+    private final Map<String, Object> context = new HashMap<>();
+    
+    public void setRequest(RequestSpecification request) {
+        context.put("request", request);
+    }
 
+    public RequestSpecification getRequest() {
+        return (RequestSpecification) context.get("request");
+    }
     public Response getResponse() {
 		return response;
 	}
