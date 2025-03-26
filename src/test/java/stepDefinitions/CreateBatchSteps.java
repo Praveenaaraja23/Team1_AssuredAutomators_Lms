@@ -38,14 +38,14 @@ public class CreateBatchSteps {
 		request = RestAssured.given().header("Authorization", "Bearer " + token);
 	}
 
-	@Given("Admin creates POST Request  with valid data in request body")
-	public void admin_creates_post_request_with_valid_data_in_request_body() {
+	@Given("Admin creates POST Request with valid data in request body for create batch")
+	public void admin_creates_post_request_with_valid_data_in_request_body_for_create_batch() {
 		LoggerLoad.info("Admin sets post for create batch request");
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 	}
 
-	@When("Admin sends HTTPS Request with data from row {string}")
-	public void admin_sends_https_request_with_data_from_row(String scenarioName)
+	@When("Admin sends HTTPS Request with data from row {string} for create batch")
+	public void admin_sends_https_request_with_data_from_row_for_create_batch(String scenarioName)
 			throws InvalidFormatException, IOException {
 		LoggerLoad.info("Scenario Name: " + scenarioName);
 		
@@ -82,8 +82,8 @@ public class CreateBatchSteps {
 
 	}
 
-	@Then("the response status should be equal to ExpectedStatus")
-	public void the_response_status_should_be_equal_to_expected_status() {
+	@Then("the response status should be equal to ExpectedStatus for create batch")
+	public void the_response_status_should_be_equal_to_expected_status_for_create_batch() {
 		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
 		
@@ -124,14 +124,14 @@ public class CreateBatchSteps {
 	}
 	
 	//No auth
-	@Given("Admin sets Authorization to No  Auth, creates POST Request  with valid data in request body")
-	public void admin_sets_authorization_to_no_auth_creates_post_request_with_valid_data_in_request_body() {
+	@Given("Admin sets Authorization to No Auth, creates POST Request with valid data in request body for create batch")
+	public void admin_sets_authorization_to_no_auth_creates_post_request_with_valid_data_in_request_body_for_create_batch() {
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 		request = RestAssured.given();
 	}
 	
-	@Given("Admin creates POST Request  with valid data in request body with invalid endpoint")
-	public void admin_creates_post_request_with_valid_data_in_request_body_with_invalid_endpoint() {
+	@Given("Admin creates POST Request  with valid data in request body with invalid endpoint for create batch")
+	public void admin_creates_post_request_with_valid_data_in_request_body_with_invalid_endpoint_for_create_batch() {
 		LoggerLoad.info("Admin creates POST Request  with valid data in request body with invalid endpoint");
 		 endPoint = ConfigReader.getBaseUrl()+"1" + EndPoints.CREATE_BATCH.getEndpoint();
 	}
