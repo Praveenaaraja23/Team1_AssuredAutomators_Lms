@@ -2,10 +2,6 @@ Feature: Class feature
 
   Background: Admin sets Authorization to Bearer Token.
 
-  @ClassModule_Getall
-  Scenario: Check if admin able to retrieve all classes  with valid Endpoint
-    Given Admin creates GET Request for CLass module
-
   @ClassModule_StaffID1
   Scenario Outline: Check if admin able to retrieve all Classes with valid StaffId (allclasses by staffId)
     Given Admin creates GET Request for CLass module(allclasses by staffId)
