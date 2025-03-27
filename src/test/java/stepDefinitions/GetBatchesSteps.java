@@ -1,6 +1,11 @@
 package stepDefinitions;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import org.testng.Assert;
 
 import context.GlobalContext;
 import context.ScenarioContext;
@@ -93,6 +98,41 @@ public class GetBatchesSteps {
 		LoggerLoad.info("actStatusCode : "+actStatusCode);
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
 	}
+	// get batches with search string
+	
+	@Given("Admin creates GET Request for get batches with search string")
+	public void admin_creates_get_request_for_get_batches_with_search_string() {
+		LoggerLoad.info("Admin sets GET request for get batches with valid endpoint");
+		 endPoint = ConfigReader.getBaseUrl() + EndPoints.GET_ALL_BATCHES.getEndpoint();
+	}
+
+	@When("Admin sends HTTPS Request with endpoint for get batches with search string {string}")
+	public void admin_sends_https_request_with_endpoint_for_get_batches_with_search_string(String searchString) {	   
+	    
+	     searchString = URLEncoder.encode("Java", StandardCharsets.UTF_8);
+	     Response response = request.given()
+	    		 .contentType("application/json")
+	    		 .queryParam("searchString", searchString)
+	    		 .get(endPoint);
+	    
+	}
+
+	@Then("Admin receives {int} OK Status with response body for get batches with search string {string}.")
+	public void admin_receives_ok_status_with_response_body_for_get_batches_with_search_string(Integer expStatusCode, String expectedKeyword) {
+		int actStatusCode = scenarioContext.getResponse().getStatusCode();
+		LoggerLoad.info("actStatusCode : "+actStatusCode);
+		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
+
+        // Extract batch names using JsonPath
+        List<String> batchNames = scenarioContext.getResponse().jsonPath().getList("batchName");
+
+        // Validate batch names contain the expected keyword        
+        boolean allBatchesMatch = batchNames.stream().allMatch(name -> name.toLowerCase().contains(expectedKeyword.toLowerCase()));
+        Assert.assertTrue(allBatchesMatch, "Not all batch names contain the keyword: " + expectedKeyword);
+        System.out.println("All batch names contain the keyword: " + expectedKeyword);
+    }
+	
+
 
 
 
@@ -189,11 +229,6 @@ public class GetBatchesSteps {
 		LoggerLoad.info("actStatusCode : "+actStatusCode);
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
 	}
-	
-
-
-
-	
 	// Get Batch by program id
 	
 	@Given("Admin creates GET Request with valid Program Id")
@@ -205,7 +240,7 @@ public class GetBatchesSteps {
 	@When("Admin sends HTTPS Request with valid Program Id for GET batch by program id")
 	public void admin_sends_https_request_with_valid_program_id_for_get_batch_by_program_id() {
 		Response response = request.given()
-				.pathParam("batchName", GlobalContext.getProgramId(0))
+				.pathParam("programId", GlobalContext.getProgramId(0))
 				.contentType("application/json").get(endPoint);
 		scenarioContext.setResponse(response);
 		LoggerLoad.info("response : "+response.jsonPath().get());
