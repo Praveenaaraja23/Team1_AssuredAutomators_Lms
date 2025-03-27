@@ -22,25 +22,7 @@ public class ConfigReader {
     public static String getProperty(String key) {
         return properties.getProperty(key);
     }
-    public static String getUserId() {
-        return properties.getProperty("userId");
-    }
-    public static String getUserFirstName() {
-        return properties.getProperty("userFirstName");
-    }
-    // updating user id and username dynamically
-    public static void updateUserDetailsInConfig(int userId, String userFirstName) {
-        try {
-            properties.setProperty("userId", String.valueOf(userId));
-            properties.setProperty("userFirstName", userFirstName);
-            try (FileOutputStream outputStream = new FileOutputStream(CONFIG_FILE_PATH)) {
-                properties.store(outputStream, "Updated user details dynamically");
-            }
-            System.out.println("Updated userId and userFirstName in config.properties");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to update config.properties", e);
-        }
-    }
+    
     public static String getBaseUrl() {
         return properties.getProperty("baseUrl");
     }
