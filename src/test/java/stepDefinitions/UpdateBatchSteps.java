@@ -8,6 +8,7 @@ import context.ScenarioContext;
 import endpoints.EndPoints;
 import io.cucumber.java.en.*;
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import models.Batch;
@@ -32,7 +33,7 @@ public class UpdateBatchSteps {
 		LoggerLoad.info("Token: " + token);
 		request = RestAssured.given().header("Authorization", "Bearer " + token);
 	}
-
+	//Valid batchId for update batch
 	@Given("Admin creates PUT Request with valid BatchId and Data")
 	public void admin_creates_put_request_with_valid_batch_id_and_data() {
 		LoggerLoad.info("Admin sets post request for update batch");
@@ -63,7 +64,9 @@ public class UpdateBatchSteps {
 					scenarioContext.setRowData(row);
 
 					LoggerLoad.info("Status Code: " + response.getStatusCode());
-					LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
+					if (response.getStatusCode() != 401 && response.getStatusCode() != 404) {
+						LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
+					}
 
 					break;
 				}
@@ -75,13 +78,78 @@ public class UpdateBatchSteps {
 
 	@Then("the response status should be equal to ExpectedStatus for update batch")
 	public void the_response_status_should_be_equal_to_expected_status_for_update_batch() {
+		Response response = scenarioContext.getResponse();
 		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
-		int actStatusCode = scenarioContext.getResponse().getStatusCode();
+		int actStatusCode = response.getStatusCode();
 
 		String expContentType = scenarioContext.getRowData().get("ContentType");
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
-		ResponseValidator.validateContentType(scenarioContext.getResponse().getContentType(), expContentType);
+		ResponseValidator.validateContentType(response.getContentType(), expContentType);
+
+		if (expStatusCode == 201 && actStatusCode == 201) {
+			int batchId = Integer.parseInt(response.jsonPath().getString("batchId"));
+			String batchName = response.jsonPath().getString("batchName");
+
+			GlobalContext.addBatchId(batchId);
+			GlobalContext.setBatchName(batchName);
+			LoggerLoad.info("batchId :" + batchId);
+			LoggerLoad.info("batchName :" + batchName);
+
+			JsonPath jsonPath = response.jsonPath();
+			Map<String, String> expRow = scenarioContext.getRowData();
+			// Validate schema
+			ResponseValidator.validateJsonSchema(response, "Batch_schema.json");
+
+			// Validate Data type
+			ResponseValidator.validateDataType(response, "batchId", Integer.class);
+			ResponseValidator.validateDataType(response, "batchName", String.class);
+			// ResponseValidator.validateDataType(response, "batchDescription", String.class);
+			ResponseValidator.validateDataType(response, "batchStatus", String.class);
+			ResponseValidator.validateDataType(response, "programName", String.class);
+			ResponseValidator.validateDataType(response, "batchNoOfClasses", Integer.class);
+			ResponseValidator.validateDataType(response, "programId", Integer.class);
+
+			// Validate Data
+			ResponseValidator.validateData(jsonPath.getString("batchId"), String.valueOf(GlobalContext.getBatchId(0)));
+			ResponseValidator.validateData(jsonPath.getString("batchName"), expRow.get("BatchName"));
+			ResponseValidator.validateData(jsonPath.getString("batchDescription"), expRow.get("BatchDescription"));
+			ResponseValidator.validateData(jsonPath.getString("batchNoOfClasses"), expRow.get("NoOfClasses"));
+			ResponseValidator.validateData(jsonPath.getString("batchStatus"), expRow.get("BatchStatus"));
+			// ResponseValidator.validateData(jsonPath.getString("programName"),expRow.get("programName"));
+			ResponseValidator.validateData(jsonPath.getString("programId"), expRow.get("ProgramId"));
+		}
 
 	}
+	//No Auth for update batch
+	@Given("Admin sets Authorization to No Auth for updating batch by batchId")
+	public void admin_sets_authorization_to_no_auth_for_updating_batch_by_batch_id() {
+		endPoint = ConfigReader.getBaseUrl() + EndPoints.UPDATE_BATCH_BY_ID.getEndpoint();
+		request = RestAssured.given();
+	}
+	
+	// update batch with invalid batchId
+	@Given("Admin creates PUT Request with invalid BatchId and Data")
+	public void admin_creates_put_request_with_invalid_batch_id_and_data() {
+		LoggerLoad.info("Admin creates POST Request  with valid data in request body with invalid endpoint");
+		 endPoint = ConfigReader.getBaseUrl() + EndPoints.UPDATE_BATCH_BY_ID.getEndpoint();
+	}
+
+	@When("Admin creates PUT Request with invalid BatchId and valid Data")
+	public void admin_creates_put_request_with_invalid_batch_id_and_valid_data() {
+		Response response = request.given()
+				.pathParam("id", GlobalContext.getBatchId(1)+ "1")
+				.contentType("application/json").put(endPoint);
+		scenarioContext.setResponse(response);
+		LoggerLoad.info("response : "+ response.asString());
+	}
+
+	@Then("Admin receives {int} Not Found Status with message and boolean success details for update batch")
+	public void admin_receives_not_found_status_with_message_and_boolean_success_details_for_update_batch(Integer expStatusCode) {
+		int actStatusCode = scenarioContext.getResponse().getStatusCode();
+		LoggerLoad.info("actStatusCode : "+actStatusCode);
+		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
+	}
+	
+	
 
 }
