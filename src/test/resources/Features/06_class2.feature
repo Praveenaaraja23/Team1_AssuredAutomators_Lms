@@ -1,3 +1,4 @@
+@class2 
 Feature: Class feature
 
   Background: Admin sets Authorization to Bearer Token.
