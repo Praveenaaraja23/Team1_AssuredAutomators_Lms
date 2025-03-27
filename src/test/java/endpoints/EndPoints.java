@@ -13,6 +13,24 @@ public enum EndPoints {
     UPDATE_BATCH_BY_ID("/batches/{batchId}"),
     DELETE_BATCH_ID("/batches/{id}"),
 	
+	//user endpoint
+	CREATE_USER("/users/roleStatus"),
+    
+	//Class Module part 2 Endpoints
+	 Get_AllClass_byStaffID("/classesByStaff/{staffId}"),
+	    Get_AllClass_byStaffID_Invalid("/classesByStaff/staffId/http"),
+	    Get_ALlRecordings("/classrecordings"),
+	     Get_ALlRecordings_Invalid("/classrecordings/staff"),
+	   Get_AllRecordings_byClassID("/classRecordings/{classId}"),
+	  Get_AllRecordings_byClassID_Invalid("/classRecordings/cl"),
+	    Put_Class("/updateClass/{classId}"),
+	    Put_Class_Invalid("/updateClass/lassId"),
+	     Put_classREcording("/updateClassrecording/{classId}"),
+	  Put_classREcordingInvalidEnd ("/updateClassrecording/classId"),
+	    Delete_classByID("/deleteByClass/{classId}"),
+	     Delete_classByID_Invalid("/deleteByClass/classId"),
+	   
+	
 	//Class end points
 		CREATE_CLASS("/CreateClassSchedule"),
 		GET_All_CLASSES("/allClasses"),
