@@ -51,7 +51,7 @@ public enum EndPoints {
 	GET_All_Programs_with_Users("/allProgramsWithUsers "),
 	Update_Program_by_ProgramName("/program/{programName}"),
 	Update_Program_by_ProgramId("/putprogram/{programId}"),
-	Delete_Program_By_ProgramID("/deletebyprogid/{programId}"),
+	Delete_Program_By_ProgramID(" /deletebyprogid/{programId}"),
 	Delete_Program_By_ProgramName("/deletebyprogname/{programName}");
 	
     
