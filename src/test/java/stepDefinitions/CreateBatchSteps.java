@@ -61,7 +61,7 @@ public class CreateBatchSteps {
 				batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
 				batch.setbatchStatus(row.get("BatchStatus"));
 				if(scenarioName.equals("CreateBatchWithEmptyProgramId") || scenarioName.equals("CreateBatchWithInactiveProgramId"))
-					batch.setbatchStatus(row.get("ProgramId"));
+					batch.setprogramId(Integer.parseInt(row.get("ProgramId")));
 				else
 					batch.setprogramId(GlobalContext.getProgramId(0));
 

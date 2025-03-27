@@ -29,7 +29,17 @@ Feature: Delete Batch
     When Admin sends  HTTPS request to the endpoint for deleting a batch by BatchId
     Then Admin receives 401 Unauthorized Status for the deletion of the batch by BatchId.
 
+  #UpdateBatchWithDeletedBatchId
   
+  Scenario Outline: Check if admin able to update a Batch with a deleted batchID in the endpoint
+
+    Given Admin creates PUT Request with valid BatchId and Data 
+    When Admin sends PUT Request with data from row "<Scenario>" for update batch
+    Then the response status should be equal to ExpectedStatus for update batch
+    
+      Examples:
+    | Scenario 			    														   |
+  	| UpdateBatchWithDeletedBatchId										 |
 
 
    

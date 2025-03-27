@@ -109,11 +109,13 @@ public class GetBatchesSteps {
 	@When("Admin sends HTTPS Request with endpoint for get batches with search string {string}")
 	public void admin_sends_https_request_with_endpoint_for_get_batches_with_search_string(String searchString) {	   
 	    
-	     searchString = URLEncoder.encode("Java", StandardCharsets.UTF_8);
+	     searchString = URLEncoder.encode(searchString, StandardCharsets.UTF_8);
 	     Response response = request.given()
 	    		 .contentType("application/json")
 	    		 .queryParam("searchString", searchString)
 	    		 .get(endPoint);
+	 	scenarioContext.setResponse(response);
+		LoggerLoad.info("response : "+ response.asString());
 	    
 	}
 

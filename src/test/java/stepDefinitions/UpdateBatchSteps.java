@@ -55,11 +55,24 @@ public class UpdateBatchSteps {
 					// batch.setbatchName(generateRandomString());
 					batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
 					batch.setbatchStatus(row.get("BatchStatus"));
-					batch.setprogramId(GlobalContext.getProgramId(0));
-					//batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
-
+															
+					if(scenarioName.equals("UpdateBatchWithDeletedProgramID"))
+						batch.setprogramId(GlobalContext.getProgramId(1));
+					else
+						batch.setprogramId(GlobalContext.getProgramId(0));					
+					
+					int batchId;
+					if(scenarioName.equalsIgnoreCase("UpdateBatchWithInvalidBatchId"))
+						batchId = 0;
+					else if(scenarioName.equalsIgnoreCase("UpdateBatchWithDeletedBatchId"))
+						batchId = GlobalContext.getBatchId(1);
+					else
+						batchId = GlobalContext.getBatchId(0);
+					
+					LoggerLoad.info("batchId :" + batchId);
+					
 					Response response = request.given().contentType("application/json")
-							.pathParam("batchId", GlobalContext.getBatchId(0)).body(batch).log().body().put(endPoint);
+							.pathParam("batchId", batchId).body(batch).log().body().put(endPoint);
 
 					scenarioContext.setResponse(response);
 					scenarioContext.setRowData(row);
@@ -132,17 +145,23 @@ public class UpdateBatchSteps {
 		 endPoint = ConfigReader.getBaseUrl() + EndPoints.UPDATE_BATCH_BY_ID.getEndpoint();
 	}
 
-	@When("Admin creates PUT Request with invalid BatchId and valid Data")
-	public void admin_creates_put_request_with_invalid_batch_id_and_valid_data() {
-		Response response = request.given()
-				.pathParam("id", GlobalContext.getBatchId(1)+ "1")
-				.contentType("application/json").put(endPoint);
-		scenarioContext.setResponse(response);
-		LoggerLoad.info("response : "+ response.asString());
-	}
+//	@When("Admin creates PUT Request with invalid BatchId and valid Data")
+//	public void admin_creates_put_request_with_invalid_batch_id_and_valid_data() {
+//		Response response = request.given()
+//				.pathParam("id", GlobalContext.getBatchId(1)+ "1")
+//				.contentType("application/json").put(endPoint);
+//		scenarioContext.setResponse(response);
+//		LoggerLoad.info("response : "+ response.asString());
+//	}
 
 	@Then("Admin receives {int} Not Found Status with message and boolean success details for update batch")
 	public void admin_receives_not_found_status_with_message_and_boolean_success_details_for_update_batch(Integer expStatusCode) {
+		int actStatusCode = scenarioContext.getResponse().getStatusCode();
+		LoggerLoad.info("actStatusCode : "+actStatusCode);
+		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
+	}
+	@Then("Admin receives {int} Bad Request Status with message and boolean success details for updating batch")
+	public void admin_receives_bad_request_status_with_message_and_boolean_success_details_for_updating_batch(Integer expStatusCode) {
 		int actStatusCode = scenarioContext.getResponse().getStatusCode();
 		LoggerLoad.info("actStatusCode : "+actStatusCode);
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
