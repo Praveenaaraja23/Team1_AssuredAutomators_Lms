@@ -41,9 +41,22 @@ public enum EndPoints {
 	    GET_CLASSDETAILS_BY_INVALIDID("/class/{invalidclassId}"),
 	    GET_CLASSRECORDINGS_BY_INVALIDBATCHID("/batchRecordings/{invalidbatchId}"),
 	    GET_CLASSES_BY_INVALIDCLASSTOPIC("/classes/{invalidclassTopic}"),
-        GET_CLASSES_BY_INVALIDBATCHID("/classesbyBatch/{invalidbatchId}");
+        GET_CLASSES_BY_INVALIDBATCHID("/classesbyBatch/{invalidbatchId}"),
 		
-    private final String endpoint;
+   
+	//Program endpoints
+	SAVE_PROGRAM("/saveprogram"),
+	GET_ALL_PROGRAMS("/allPrograms"),
+	GET_PROGRAM_BY_ID("/programs/{programId}"),
+	GET_All_Programs_with_Users("/allProgramsWithUsers "),
+	Update_Program_by_ProgramName("/program/{programName}"),
+	Update_Program_by_ProgramId("/putprogram/{programId}"),
+	Delete_Program_By_ProgramID("/deletebyprogid/{programId}"),
+	Delete_Program_By_ProgramName("/deletebyprogname/{programName}");
+	
+    
+    private String endpoint;
+	private static final String baseUrl = "https://lms-hackthon-feb25-803334c87fbe.herokuapp.com/lms";
 
     EndPoints(String endpoint) {
         this.endpoint = endpoint;
@@ -52,4 +65,11 @@ public enum EndPoints {
     public String getEndpoint() {
         return endpoint;
     }
+    public String getFullEndpoint() {
+        return baseUrl + this.endpoint;  
+    }
 }
+
+
+
+
