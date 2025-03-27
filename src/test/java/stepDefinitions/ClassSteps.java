@@ -130,6 +130,7 @@ public class ClassSteps {
 	
 	@Then("Admin receive success created status")
 	public void admin_receive_success_created_status() {
+		Response response = scenarioContext.getResponse();
 		LoggerLoad.info("Admin calls post request");
 		//LoggerLoad.info(csId);
 		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
@@ -143,28 +144,32 @@ public class ClassSteps {
 			GlobalContext.addClassId(classId);
 			LoggerLoad.info("classId :" + classId);
 		
-		 JsonPath jsonPath = scenarioContext.getResponse().jsonPath();
+		 //JsonPath jsonPath = scenarioContext.getResponse().jsonPath();
+			JsonPath jsonPath = response.jsonPath();
 		  Map<String, String> expRow = scenarioContext.getRowData();
+		// Validate schema
+			ResponseValidator.validateJsonSchema(response, "Class_Schema.json");
 		  
 		// Validate Data type
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "csId", Integer.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchId", Integer.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "classNo", Integer.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "classDate", String.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "classTopic", String.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(),  "classStaffId", String.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "classDescription", String.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "classComments", String.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(),  "classNotes", String.class);
-		ResponseValidator.validateDataType(scenarioContext.getResponse(), "classRecordingPath", String.class);
-		ResponseValidator.validateDateFormat(scenarioContext.getResponse(), "classScheduledDates");
-		//ResponseValidator.validateDataType(scenarioContext.getResponse(), "classScheduledDates", Integer.class);
+		ResponseValidator.validateDataType(response, "csId", Integer.class);
+		ResponseValidator.validateDataType(response, "batchId", Integer.class);
+		ResponseValidator.validateDataType(response, "classNo", Integer.class);
+		ResponseValidator.validateDataType(response, "classDate", String.class);
+		ResponseValidator.validateDataType(response, "classTopic", String.class);
+		ResponseValidator.validateDataType(response,  "classStaffId", String.class);
+		ResponseValidator.validateDataType(response, "classDescription", String.class);
+		ResponseValidator.validateDataType(response, "classComments", String.class);
+		ResponseValidator.validateDataType(response,  "classNotes", String.class);
+		ResponseValidator.validateDataType(response, "classRecordingPath", String.class);
+		ResponseValidator.validateDateFormat(response, "classScheduledDates");
+		//ResponseValidator.validateDataType(response, "classScheduledDates", Integer.class);
 		// Validate Data
 		ResponseValidator.validateData(jsonPath.getString("classTopic"), expRow.get("ClassTopic"));
 		ResponseValidator.validateData(jsonPath.getString("classDescription"), expRow.get("ClassDescription"));
 		ResponseValidator.validateData(jsonPath.getString("classComments"), expRow.get("ClassComments"));
 		ResponseValidator.validateData(jsonPath.getString("classRecordingPath"), expRow.get("ClassRecordingPath"));
-	  	ResponseValidator.validateData(jsonPath.getString("classNotes"), expRow.get("classNotes"));
+	  	ResponseValidator.validateData(jsonPath.getString("classNotes"), expRow.get("ClassNotes"));
+	 
 	}	
 	}
 	

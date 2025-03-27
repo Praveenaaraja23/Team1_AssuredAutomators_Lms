@@ -109,10 +109,10 @@ public class Program_SD {
 	       //Assert.assertEquals(jsonPath.getString("programDescription"), rowData.get("ProgramDescription"));
 	       Assert.assertEquals(jsonPath.getString("programName"), rowData.get("ProgramName"));
 	       Assert.assertEquals(jsonPath.getString("programStatus"), rowData.get("ProgramStatus"));
-	       
+	       //
 	      
    		response.then().assertThat()
-   		.body(JsonSchemaValidator.matchesJsonSchema(new File("./src/test/resources/Features/jsonschema/program.json")));
+   		.body(JsonSchemaValidator.matchesJsonSchema(new File("./src/test/resources/Schema/program.json")));
            
 	       }
 	      
@@ -201,7 +201,7 @@ public class Program_SD {
 	             GlobalContext.addprogramName(updatedProgramName);
 	             
 	             response.then().assertThat()
-	        		.body(JsonSchemaValidator.matchesJsonSchema(new File("./src/test/resources/Features/jsonschema/program.json")));
+	        		.body(JsonSchemaValidator.matchesJsonSchema(new File("./src/test/resources/Schema/program.json")));
 	          
 	        }		 
 	}
