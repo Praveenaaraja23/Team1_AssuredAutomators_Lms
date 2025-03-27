@@ -28,8 +28,21 @@ public enum EndPoints {
 	     Put_classREcording("/updateClassrecording/{classId}"),
 	  Put_classREcordingInvalidEnd ("/updateClassrecording/classId"),
 	    Delete_classByID("/deleteByClass/{classId}"),
-	     Delete_classByID_Invalid("/deleteByClass/classId");
-	    //***class part 2 code END
+	     Delete_classByID_Invalid("/deleteByClass/classId"),
+	   
+	
+	//Class end points
+		CREATE_CLASS("/CreateClassSchedule"),
+		GET_All_CLASSES("/allClasses"),
+		GET_CLASSDETAILS_BY_ID("/class/{classId}"),
+		GET_CLASSRECORDINGS_BY_BATCHID("/batchRecordings/{batchId}"),
+		GET_CLASSES_BY_CLASSTOPIC("/classes/{classTopic}"),
+	    GET_CLASSES_BY_BATCHID("/classesbyBatch/{batchId}"),
+	    GET_CLASSDETAILS_BY_INVALIDID("/class/{invalidclassId}"),
+	    GET_CLASSRECORDINGS_BY_INVALIDBATCHID("/batchRecordings/{invalidbatchId}"),
+	    GET_CLASSES_BY_INVALIDCLASSTOPIC("/classes/{invalidclassTopic}"),
+        GET_CLASSES_BY_INVALIDBATCHID("/classesbyBatch/{invalidbatchId}");
+		
     private final String endpoint;
 
     EndPoints(String endpoint) {
