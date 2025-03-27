@@ -78,4 +78,17 @@ public class RequestSpec {
 		return new RequestSpecBuilder().addRequestSpecification(req_Base)
 				.setBasePath(EndPoints.Delete_classByID_Invalid.getEndpoint()).build();
 	}
+	public static RequestSpecification Delete_Program_By_ProgramID(int programId2){
+		return new RequestSpecBuilder().addRequestSpecification(req_Base)
+				.setBasePath(EndPoints.Delete_Program_By_ProgramID.getEndpoint())
+				.addPathParam("programId", programId2)
+				.build();
+	}
+	public static RequestSpecification Delete_Batch_By_Batchid(int batchid2){
+		return new RequestSpecBuilder().addRequestSpecification(req_Base)
+				.setBasePath(EndPoints.DELETE_BATCH_ID.getEndpoint())
+				.addPathParam("id", batchid2)
+				.build();
+	}
+	
 }

@@ -33,6 +33,9 @@ public class ClassModule2_SD {
 	private Response response;
 	private String staffID_Invalid = "AB2025";
 	private String csId_Invalid = "none";
+	int programId2;
+  int batchid2;
+	
 	private String csId = "52";
 	private String staffID = "U25";
 	private String singleObjectJson;
@@ -448,8 +451,11 @@ public class ClassModule2_SD {
 	@Given("Admin creates DELETE Request with valid classId DeleteClass_CSID")
 	public void admin_creates_delete_request_with_valid_class_id_delete_class_csid() {
 		// csId = (String) scenarioContext.getContext("csId");
-		System.out.print("printing the classId inside DeleteClass_CSID:" + csId);
+		int csId_new= GlobalContext.getClassId(0);	
+		csId= String.valueOf(csId_new);
+				System.out.print("printing the classId inside DeleteClass_CSID:" + csId);
 	}
+	
 
 	@When("Admin sends HTTPS Request  with endpoint DeleteClass_CSID {string}")
 	public void admin_sends_https_request_with_endpoint_delete_class_csid(String scenarioType) {
@@ -476,7 +482,7 @@ public class ClassModule2_SD {
 	}
 
 	@Then("Admin receives Status in DeleteClass_CSID with response {int}")
-	public void admin_receives_status_in_delete_class_csid_with_response(Integer statuscode) {
+	public void delete_Class(Integer statuscode) {
 		int actualstatuscode = response.getStatusCode();
 		System.out.println("Actual Status Code: " + actualstatuscode);
 		try {
@@ -486,5 +492,57 @@ public class ClassModule2_SD {
 		}
 		response.then().log().all();
 	}
+	
+	
+	// delete Program ID2
+	@Given("Admin creates DELETE Request with valid program ID DeleteProgram2")
+	public void deleteProgram2_request() {
+		programId2= GlobalContext.getProgramId(0);	
+    System.out.print("printing the programId2 inside DeleteProgram2:" + programId2);
+	}
 
+	
+	@When("Admin sends HTTPS Request  with endpoint DeleteProgram2")
+	public void SendDeleteProgram2_Request() {
+	
+response = given().spec(RequestSpec.Delete_Program_By_ProgramID(programId2)).header("Authorization", "Bearer " + token)
+					.when().delete();
+}
+	@Then("Admin receives Status in DeleteProgram2 with response statuscode")
+	public void delete_program(Integer statuscode) {
+		int actualstatuscode = response.getStatusCode();
+		System.out.println("Actual Status Code: " + actualstatuscode);
+		try {
+			Assert.assertEquals(actualstatuscode, statuscode, "Unexpected status code!");
+		} catch (AssertionError e) {
+			System.err.println("Response Body: " + response.getBody().asString());
+		}
+		response.then().log().all();
+	}
+	
+	// delete batchid 2
+	@Given("Admin creates DELETE Request with valid user ID DeleteBatch2")
+	public void DeleteBatch2_request() {
+		
+		batchid2= GlobalContext.getBatchId(0);	
+    System.out.print("printing the programId2 inside DeleteBatch2:" + batchid2);
+	}
+
+	@When("Admin sends HTTPS Request  with endpoint DeleteBatch2")
+	public void sendDeleteBatchId2_Request() {
+	
+response = given().spec(RequestSpec.Delete_Batch_By_Batchid(batchid2)).header("Authorization", "Bearer " + token)
+					.when().delete();
+}
+	@Then("Admin receives Status in DeleteBatch2 with response statuscode")
+	public void delete_batchid_Request(Integer statuscode) {
+		int actualstatuscode = response.getStatusCode();
+		System.out.println("Actual Status Code: " + actualstatuscode);
+		try {
+			Assert.assertEquals(actualstatuscode, statuscode, "Unexpected status code!");
+		} catch (AssertionError e) {
+			System.err.println("Response Body: " + response.getBody().asString());
+		}
+		response.then().log().all();
+	}
 }

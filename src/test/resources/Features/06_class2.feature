@@ -89,3 +89,15 @@ Feature: Class feature
       | invalidendpoint |        404 |
       | invalidclassID  |        404 |
       | noauthorization |        401 |
+
+  @DeleteProgram2
+  Scenario Outline: Check if Admin able to delete a program with valid program ID
+    Given Admin creates DELETE Request with valid program ID DeleteProgram2
+    When Admin sends HTTPS Request  with endpoint DeleteProgram2 
+    Then Admin receives Status in DeleteProgram2 with response statuscode
+    
+   @DeleteBatch2
+  Scenario Outline: Check if Admin able to delete a user2 with valid user ID
+    Given Admin creates DELETE Request with valid user ID DeleteBatch2
+    When Admin sends HTTPS Request  with endpoint DeleteBatch2 
+    Then Admin receives Status in DeleteBatch2 with response statuscode
