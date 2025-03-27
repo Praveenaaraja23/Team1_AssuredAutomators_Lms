@@ -32,10 +32,24 @@ Feature: UpdateBatchByBatchId
     | Scenario 			    														   |
   	| UpdateBatchWithNoAuth											       |
   	
-  	Scenario: Check if admin able to update a Batch with invalid batchID and mandatory fields in request body
+  	Scenario Outline: Check if admin able to update a Batch with invalid batchID and mandatory fields in request body
 
     Given Admin creates PUT Request with invalid BatchId and Data 
-    When Admin creates PUT Request with invalid BatchId and valid Data
+    When Admin sends PUT Request with data from row "<Scenario>" for update batch
     Then Admin receives 404 Not Found Status with message and boolean success details for update batch
+    
+     Examples:
+    | Scenario 			    														   |
+  	| UpdateBatchWithInvalidBatchId										 |
+    
+    Scenario Outline: Check if admin able to update a Batch with a valid batchID and deleted programID field  in the request body with other mandatory fields
+
+    Given Admin creates PUT Request with valid BatchId and Data 
+    When Admin sends PUT Request with data from row "<Scenario>" for update batch
+    Then Admin receives 400 Bad Request Status with message and boolean success details for updating batch
+    
+     Examples:
+    | Scenario 			    														   |
+  	| UpdateBatchWithDeletedProgramID										 |
     
      

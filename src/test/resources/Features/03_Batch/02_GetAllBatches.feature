@@ -27,7 +27,7 @@ Feature: Get Batch
  	  Scenario: Check if admin able to retrieve all batches  with search string
     
     Given Admin creates GET Request for get batches with search string
-    When Admin sends HTTPS Request with endpoint for get batches with search string "Java"
-    Then Admin receives 200 OK Status with response body for get batches with search string "Java".
+    When Admin sends HTTPS Request with endpoint for get batches with search string "AWS"
+    Then Admin receives 200 OK Status with response body for get batches with search string "AWS".
 
      
