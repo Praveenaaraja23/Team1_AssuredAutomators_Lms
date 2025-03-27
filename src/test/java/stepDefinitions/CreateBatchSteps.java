@@ -56,11 +56,14 @@ public class CreateBatchSteps {
 
 				Batch batch = new Batch();
 				batch.setbatchDescription(row.get("BatchDescription"));
-				// batch.setbatchName(row.get("BatchName"));
-				batch.setbatchName(generateRandomString());
+				batch.setbatchName(row.get("BatchName"));
+				//batch.setbatchName(generateRandomString());
 				batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
 				batch.setbatchStatus(row.get("BatchStatus"));
-				batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
+				if(scenarioName.equals("CreateBatchWithEmptyProgramId") || scenarioName.equals("CreateBatchWithInactiveProgramId"))
+					batch.setbatchStatus(row.get("ProgramId"));
+				else
+					batch.setprogramId(GlobalContext.getProgramId(0));
 
 				Response response = request.given().contentType("application/json").body(batch).log().body()
 						.post(endPoint);
@@ -120,8 +123,7 @@ public class CreateBatchSteps {
 			ResponseValidator.validateData(jsonPath.getString("batchDescription"), expRow.get("BatchDescription"));
 			ResponseValidator.validateData(jsonPath.getString("batchNoOfClasses"), expRow.get("NoOfClasses"));
 			ResponseValidator.validateData(jsonPath.getString("batchStatus"), expRow.get("BatchStatus"));
-			// ResponseValidator.validateData(jsonPath.getString("programName"),expRow.get("programName"));
-			ResponseValidator.validateData(jsonPath.getString("programId"), expRow.get("ProgramId"));
+			ResponseValidator.validateData(jsonPath.getString("programId"), String.valueOf(GlobalContext.getProgramId(0)));
 		}
 
 	}
@@ -140,20 +142,19 @@ public class CreateBatchSteps {
 	}
 
 	// This should be removed in final submission
-	public static String generateRandomString() {
-		String prefix = "Java";
-		String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		Random random = new Random();
-
-		// StringBuilder to append the initial "Java"
-		StringBuilder stringBuilder = new StringBuilder(prefix);
-
-		// Generate remaining 6 characters
-		for (int i = 0; i < 6; i++) {
-			char randomChar = alphanumeric.charAt(random.nextInt(alphanumeric.length()));
-			stringBuilder.append(randomChar);
-		}
-
-		return stringBuilder.toString();
-	}
+	/*
+	 * public static String generateRandomString() { String prefix = "Java"; String
+	 * alphanumeric =
+	 * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; Random
+	 * random = new Random();
+	 * 
+	 * // StringBuilder to append the initial "Java" StringBuilder stringBuilder =
+	 * new StringBuilder(prefix);
+	 * 
+	 * // Generate remaining 6 characters for (int i = 0; i < 6; i++) { char
+	 * randomChar = alphanumeric.charAt(random.nextInt(alphanumeric.length()));
+	 * stringBuilder.append(randomChar); }
+	 * 
+	 * return stringBuilder.toString(); }
+	 */
 }

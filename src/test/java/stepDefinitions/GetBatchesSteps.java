@@ -240,7 +240,7 @@ public class GetBatchesSteps {
 	@When("Admin sends HTTPS Request with valid Program Id for GET batch by program id")
 	public void admin_sends_https_request_with_valid_program_id_for_get_batch_by_program_id() {
 		Response response = request.given()
-				.pathParam("batchName", GlobalContext.getProgramId(0))
+				.pathParam("programId", GlobalContext.getProgramId(0))
 				.contentType("application/json").get(endPoint);
 		scenarioContext.setResponse(response);
 		LoggerLoad.info("response : "+response.jsonPath().get());

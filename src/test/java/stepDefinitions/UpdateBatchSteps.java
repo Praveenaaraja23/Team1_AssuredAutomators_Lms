@@ -55,7 +55,8 @@ public class UpdateBatchSteps {
 					// batch.setbatchName(generateRandomString());
 					batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
 					batch.setbatchStatus(row.get("BatchStatus"));
-					batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
+					batch.setprogramId(GlobalContext.getProgramId(0));
+					//batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
 
 					Response response = request.given().contentType("application/json")
 							.pathParam("batchId", GlobalContext.getBatchId(0)).body(batch).log().body().put(endPoint);
@@ -89,9 +90,7 @@ public class UpdateBatchSteps {
 		if (expStatusCode == 201 && actStatusCode == 201) {
 			int batchId = Integer.parseInt(response.jsonPath().getString("batchId"));
 			String batchName = response.jsonPath().getString("batchName");
-
-			GlobalContext.addBatchId(batchId);
-			GlobalContext.setBatchName(batchName);
+			
 			LoggerLoad.info("batchId :" + batchId);
 			LoggerLoad.info("batchName :" + batchName);
 
@@ -115,8 +114,7 @@ public class UpdateBatchSteps {
 			ResponseValidator.validateData(jsonPath.getString("batchDescription"), expRow.get("BatchDescription"));
 			ResponseValidator.validateData(jsonPath.getString("batchNoOfClasses"), expRow.get("NoOfClasses"));
 			ResponseValidator.validateData(jsonPath.getString("batchStatus"), expRow.get("BatchStatus"));
-			// ResponseValidator.validateData(jsonPath.getString("programName"),expRow.get("programName"));
-			ResponseValidator.validateData(jsonPath.getString("programId"), expRow.get("ProgramId"));
+			ResponseValidator.validateData(jsonPath.getString("programId"), String.valueOf(GlobalContext.getProgramId(0)));
 		}
 
 	}

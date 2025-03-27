@@ -1,6 +1,10 @@
 package utilities;
 
 import java.io.File;
+import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertTrue;
+import java.time.Instant;
+import java.util.List;
 
 import org.testng.Assert;
 
@@ -46,4 +50,23 @@ public class ResponseValidator {
 		}
 
 	}
+
+	public static void validateDateFormat(Response response, String jsonPath) {
+		List<String> dates = response.jsonPath().getList(jsonPath, String.class);
+		assertTrue("classScheduledDates should not be empty", dates != null && !dates.isEmpty());
+
+		for (String date : dates) {
+			assertTrue("Invalid date format: " + date, isValidISODate(date));
+		}
+	}
+
+	private static boolean isValidISODate(String date) {
+		try {
+			Instant.parse(date); // Checks if the string follows ISO 8601 format
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 }
