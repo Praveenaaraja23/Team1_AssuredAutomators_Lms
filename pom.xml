@@ -51,11 +51,11 @@
 			<version>20210307</version>
 		</dependency>
 		<dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.16.1</version>
-        <scope>test</scope>
-    </dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	        <version>2.16.1</version>
+	        <scope>test</scope>
+    	</dependency>
 		<!--
 		https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
 		<dependency>
@@ -119,6 +119,12 @@
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-cucumber7-jvm</artifactId>
 			<version>2.29.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>5.4.0</version>
 		</dependency>
 	</dependencies>
 	<build>

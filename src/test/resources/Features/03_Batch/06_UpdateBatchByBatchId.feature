@@ -22,4 +22,20 @@ Feature: UpdateBatchByBatchId
 		
 		
 		
-		
+		Scenario Outline: Check if admin able to update a Batch with valid batchID and mandatory fields in request body without authorization
+
+    Given Admin sets Authorization to No Auth for updating batch by batchId 
+    When Admin sends PUT Request with data from row "<Scenario>" for update batch
+    Then the response status should be equal to ExpectedStatus for update batch
+    
+      Examples:
+    | Scenario 			    														   |
+  	| UpdateBatchWithNoAuth											       |
+  	
+  	Scenario: Check if admin able to update a Batch with invalid batchID and mandatory fields in request body
+
+    Given Admin creates PUT Request with invalid BatchId and Data 
+    When Admin creates PUT Request with invalid BatchId and valid Data
+    Then Admin receives 404 Not Found Status with message and boolean success details for update batch
+    
+     
