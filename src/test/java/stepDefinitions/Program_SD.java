@@ -1,5 +1,6 @@
 package stepDefinitions;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import org.testng.Assert;
@@ -15,6 +16,7 @@ import io.restassured.specification.RequestSpecification;
 import utilities.ConfigReader;
 import utilities.ExcelReader;
 import utilities.LoggerLoad;
+import io.restassured.module.jsv.JsonSchemaValidator;
 
 public class Program_SD {
 	    
@@ -60,7 +62,7 @@ public class Program_SD {
 	    	// Fetch data from the sheet
 	          fetchDataFromSheet(sheetName, Testcases);
 			  response = programApi.createPrograms(rowData,GlobalContext.getToken());
-			   System.out.println("Response Body: " + response.getBody().asString());
+			  LoggerLoad.info("Response Body: " + response.getBody().asString());
 			
 			   
 			   if(response.getStatusCode() == 201) {
@@ -69,9 +71,12 @@ public class Program_SD {
 		            
 		            GlobalContext.addProgramId(programId);
 		            GlobalContext.addprogramName(programName);
+		            
+		        }
+		          
 		        }		  
 	       
-	    }
+	    
 
 	    @Then("Response status code should be displayed with with status Message")
 	    public void response_status_code_should_be_displayed_with_with_status_message() {
@@ -87,9 +92,8 @@ public class Program_SD {
 
 	        // Assert status code and status line
 	        Assert.assertEquals( actualstatusCode,expectedStatusCode);
-	        System.out.println("statuscode: " +actualstatusCode);
 	        Assert.assertEquals(expectedStatusMessage,actualStatusMessage);
-	       System.out.println("Message: " + actualStatusMessage);
+
 	       
 	       if(response.getStatusCode() == 201) {
 	       JsonPath jsonPath = response.jsonPath();
@@ -105,6 +109,11 @@ public class Program_SD {
 	       //Assert.assertEquals(jsonPath.getString("programDescription"), rowData.get("ProgramDescription"));
 	       Assert.assertEquals(jsonPath.getString("programName"), rowData.get("ProgramName"));
 	       Assert.assertEquals(jsonPath.getString("programStatus"), rowData.get("ProgramStatus"));
+	       //
+	      
+   		response.then().assertThat()
+   		.body(JsonSchemaValidator.matchesJsonSchema(new File("./src/test/resources/Schema/program.json")));
+           
 	       }
 	      
 	
@@ -116,7 +125,6 @@ public class Program_SD {
 	    public void user_sends_a_get_request_to_fetch_all_programs_from_row(String sheetName, Integer Testcases) throws Exception {
 	       
 	    	fetchDataFromSheet(sheetName, Testcases);
-		   // response = programApi.getAllPrograms(scenarioContext.getAuthToken());
 	    	response=programApi.getAllPrograms(GlobalContext.getToken());
 	    }
 
@@ -130,11 +138,12 @@ public class Program_SD {
 		       String statusLine = response.getStatusLine();
 		       String actualStatusMessage = statusLine.split(" ", 3)[2];
 
-		        // Assert status code and status line
+		       String expectedContentType = rowData.get("ExpectedContentType");
+		       String actualcontentType = response.getHeader("Content-Type");
+		       Assert.assertEquals(expectedContentType, actualcontentType);
 		        Assert.assertEquals( actualstatusCode,expectedStatusCode);
-		        System.out.println("statuscode: " +actualstatusCode);
 		        Assert.assertEquals(expectedStatusMessage,actualStatusMessage);
-		       System.out.println("Message: " + actualStatusMessage);
+
 
 	       
 	    }
@@ -151,8 +160,7 @@ public class Program_SD {
 //GET:programById
 	@When("User sends a GET request to fetch program by valid ProgramId from {string} row {int}")
 	public void user_sends_a_get_request_to_fetch_program_by_valid_program_id_from_row(String sheetName, Integer Testcases) throws Exception {
-		fetchDataFromSheet(sheetName, Testcases);
-		//programApi.getProgramById(scenarioContext.getAuthToken(), scenarioContext.getProgramId());	
+		fetchDataFromSheet(sheetName, Testcases);	
 		response=programApi.getProgramById(GlobalContext.getToken(),GlobalContext.getProgramId(0));
 	 
 	}
@@ -166,12 +174,13 @@ public class Program_SD {
 	       String statusLine = response.getStatusLine();
 	       String actualStatusMessage = statusLine.split(" ", 3)[2];
 
-	        // Assert status code and status line
+	      
 	        Assert.assertEquals( actualstatusCode,expectedStatusCode);
-	        System.out.println("statuscode: " +actualstatusCode);
 	        Assert.assertEquals(expectedStatusMessage,actualStatusMessage);
-	       System.out.println("Message: " + actualStatusMessage);
-	   
+	        String expectedContentType = rowData.get("ExpectedContentType");
+	        String actualcontentType = response.getHeader("Content-Type");
+	        Assert.assertEquals(expectedContentType, actualcontentType);
+
 	} 
 	
 	//update:ByprogramId
@@ -182,7 +191,6 @@ public class Program_SD {
 		fetchDataFromSheet(sheetName, Testcases);
 		programId=GlobalContext.getProgramId(0);
 		
-		//programApi.reuseprograms(rowData, GlobalContext.getToken());
 		 response = programApi.putProgramById(rowData, programId, GlobalContext.getToken());
 		 
 		
@@ -191,10 +199,13 @@ public class Program_SD {
 		        String updatedProgramName = jsonPath.getString("programName");
 	             GlobalContext.addProgramId(programId);
 	             GlobalContext.addprogramName(updatedProgramName);
-	             System.out.println("Updated Program Name Stored in GlobalContext: " + updatedProgramName);
+	             
+	             response.then().assertThat()
+	        		.body(JsonSchemaValidator.matchesJsonSchema(new File("./src/test/resources/Schema/program.json")));
 	          
 	        }		 
 	}
+
 
 	@Then("Response status code should be displayed and programId should be saved for validuser.")
 	public void response_status_code_should_be_displayed_and_program_id_should_be_saved_for_validuser() {
@@ -224,11 +235,9 @@ public class Program_SD {
 	public void user_sends_a_put_request_with_program_name_row(String sheetName, Integer Testcases) throws Exception {
 		
 		fetchDataFromSheet(sheetName, Testcases);
-		//String programName = GlobalContext.getProgramName(0);
-		String ProgramName=GlobalContext.getProgramName(0);
-		 System.out.println("ProgramName: " + ProgramName);
-		response = programApi.updateProgramByName(rowData, GlobalContext.getToken(),ProgramName);
-        System.out.println("Response Body: " + response.getBody().asString());
+		String programName = GlobalContext.getProgramName(0);
+		response = programApi.updateProgramByName(rowData, GlobalContext.getToken(),programName);
+		LoggerLoad.info("Response Body: " + response.getBody().asString());
         
         if(response.getStatusCode() == 200) {
 	         
@@ -263,16 +272,34 @@ public class Program_SD {
 	   
 	}
 	
-	/*
+	
 //Deletebyprogramname
 	@When("User sends a Delete request with programname {string} row {int}")
 	public void user_sends_a_delete_request_with_programname_row(String sheetName, Integer Testcases) throws Exception {
 		
+		
 		fetchDataFromSheet(sheetName, Testcases);
-		String updatedProgramName = GlobalContext.getProgramName(0);
-		 response = programApi.deleteProgramByName(GlobalContext.getToken(), updatedProgramName);
-		 System.out.println("programname delete"+response.getBody().asString());
+
+		String programName = GlobalContext.getProgramName(1);
+		 response = programApi.deleteProgramByName(GlobalContext.getToken(), programName);
+		 LoggerLoad.info("program Name deleted"+response.getBody().asString());
+		 
+	
 	 
+	}
+	
+
+	@When("User sends a Delete request with programid {string} row {int}")
+	public void user_sends_a_delete_request_with_programid_row(String sheetName, Integer Testcases) throws Exception {
+		
+	
+		
+		fetchDataFromSheet(sheetName, Testcases);
+		programId=GlobalContext.getProgramId(2);
+	    response = programApi.deleteProgramById(GlobalContext.getToken(), programId);
+	    LoggerLoad.info("program ID deleted"+response.getBody().asString());
+	    
+
 	}
 
 	@Then("Response status code should be displayed and Data should be deleted.")
@@ -284,28 +311,19 @@ public class Program_SD {
 	       int actualstatusCode = response.getStatusCode();
 	       String statusLine = response.getStatusLine();
 	       String actualStatusMessage = statusLine.split(" ", 3)[2];
-	       String expectedContentType = rowData.get("ExpectedContentType");
-	       String actualcontentType = response.getHeader("Content-Type");
+	     
 
 	        // Assert status code and status line
 	        Assert.assertEquals(actualstatusCode,expectedStatusCode);
 	        Assert.assertEquals(expectedStatusMessage,actualStatusMessage);
-	        Assert.assertEquals(expectedContentType, actualcontentType);
+	        
 	        LoggerLoad.info("Actualstatuscode: " +actualstatusCode);
 	        LoggerLoad.info("Actual Status Message: " + actualStatusMessage);
 	   
 	}
 
-	@When("User sends a Delete request with programid {string} row {int}")
-	public void user_sends_a_delete_request_with_programid_row(String sheetName, Integer Testcases) throws Exception {
-		
-		fetchDataFromSheet(sheetName, Testcases);
-		programId=GlobalContext.getProgramId(0);
-	        response = programApi.deleteProgramById(GlobalContext.getToken(), programId);
-	        System.out.println("programid delete"+response);
-	}
 
-*/
+
 
 
 	  

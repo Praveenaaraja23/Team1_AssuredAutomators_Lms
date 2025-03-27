@@ -3,6 +3,7 @@ package endpoints;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import models.programpojo;
+import utilities.LoggerLoad;
 
 import static io.restassured.RestAssured.given;
 
@@ -27,19 +28,18 @@ public class programAPI {
         Programpojo.setProgramStatus(rowData.get("ProgramStatus"));
 
         String jsonBody = Programpojo.getJson();
-        System.out.println("Request Body: " + jsonBody);
+        LoggerLoad.info("Request Body: " + jsonBody);
 
-        //String token = (String) scenarioContext.getContext("AuthToken"); // Get token from ScenarioContext
-
+        
         Response response = given()
-                .header("Authorization", "Bearer " + token)  // Use the token here
+                .header("Authorization", "Bearer " + token)  
                 .contentType(ContentType.JSON)
                 .body(jsonBody)
                 .when()
                 .post(EndPoints.SAVE_PROGRAM.getFullEndpoint());  
 
-        System.out.println("Response Status Code: " + response.getStatusCode()); 
-        System.out.println("Response Body: " + response.getBody().asPrettyString());
+        LoggerLoad.info("Response Status Code: " + response.getStatusCode()); 
+        LoggerLoad.info("Response Body: " + response.getBody().asPrettyString());
 
         return response;
     }
@@ -47,7 +47,7 @@ public class programAPI {
 
 	    // GET: Get All Programs
 	    public Response getAllPrograms(String token) {
-	    	 //String token = (String) scenarioContext.getContext("AuthToken");
+	    	 
 	        return given()
 	            .header("Authorization", "Bearer " + token)
 	            .when()
@@ -56,9 +56,7 @@ public class programAPI {
 
 	    // GET: Get Program by ID
 	    public Response getProgramById(String token, int programId) {
-	        //String token = (String) scenarioContext.getContext("AuthToken");
-	        //int programId = (int) scenarioContext.getContext("programId"); // Retrieve stored programId
-
+	        
 	        return given()
 	                .header("Authorization", "Bearer " + token)
 	                .pathParam("programId", programId)
@@ -85,20 +83,19 @@ public class programAPI {
 	        Programpojo.setProgramStatus(rowData.get("ProgramStatus"));
 
 	        String jsonBody = Programpojo.getJson();
-	        System.out.println("Request Body: " + jsonBody);
+	        LoggerLoad.info("Request Body: " + jsonBody);
 
-	        //String token = (String) scenarioContext.getContext("AuthToken"); // Get token from ScenarioContext
-
+	       
 	        Response response = given()
-	                .header("Authorization", "Bearer " + token)  // Use the token here
+	                .header("Authorization", "Bearer " + token) 
 	                .contentType(ContentType.JSON)
 	                .body(jsonBody)
 	                .pathParam("programId", programId)
 	                .when()
 	                .put(EndPoints.Update_Program_by_ProgramId.getFullEndpoint());  
 
-	        System.out.println("Response Status Code: " + response.getStatusCode()); 
-	        System.out.println("Response Body: " + response.getBody().asPrettyString());
+	        LoggerLoad.info("Response Status Code: " + response.getStatusCode()); 
+	        LoggerLoad.info("Response Body: " + response.getBody().asPrettyString());
 
 	        return response;
 	    }
@@ -111,7 +108,7 @@ public class programAPI {
 	        Programpojo.setProgramStatus(rowData.get("ProgramStatus"));
 
 	        String jsonBody = Programpojo.getJson();
-	        System.out.println("Request Body: " + jsonBody);
+	        LoggerLoad.info("Request Body: " + jsonBody);
 
 	        Response response= given()
 	                .header("Authorization", "Bearer " + token)
@@ -126,25 +123,31 @@ public class programAPI {
 	    // DELETE: Delete Program by Name
 	 
 	    public Response deleteProgramByName(String token, String programName) {
-	    	Response response= given()
+	    	return given()
 	                .header("Authorization", "Bearer " + token)
 	                .pathParam("programName", programName)
 	                .when()
 	                .delete(EndPoints.Delete_Program_By_ProgramName.getFullEndpoint());
-			return response;
+			
 	    }
+	   
+	    
+	    
+	    
 
 	    // DELETE: Delete Program by ID
 	    public Response deleteProgramById(String token, int programId) {
-	    	Response response=given()
+	    	return given()
 	                .header("Authorization", "Bearer " + token)
 	                .pathParam("programId", programId)
 	                .when()
 	                .delete(EndPoints.Delete_Program_By_ProgramID.getFullEndpoint());
-			return response;
+			
 	    }
 
 }
+
+
 
 
 	

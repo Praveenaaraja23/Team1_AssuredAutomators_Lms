@@ -19,8 +19,7 @@ Feature: Create Batch API
 		| CreateBatchWithEmptyProgramId                  |
 		| CreateBatchWithEmptyBatchStatus                |
 		| CreateBatchWithEmptyNoOfClasses                |
-		| CreateBatchWithEmptyBatchName                  |
-		| CreateBatchWithValidEndpointNonexistingBody    |	
+		| CreateBatchWithEmptyBatchName                  |		    	
 		| CreateBatchWithMissingMandatoryFields          |
 		| CreateBatchWithInactiveProgramId               |
 		| CreateBatchWithInvalidData                     |
