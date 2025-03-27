@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "csId": {
+      "type": "integer"
+    },
+    "batchId": {
+      "type": "integer"
+    },
+    "classNo": {
+      "type": "integer"
+    },
+    "classDate": {
+      "type": "string"
+    },
+    "classTopic": {
+      "type": "string"
+    },
+    "classStatus": {
+      "type": "string"
+    },
+    "classStaffId": {
+      "type": "string"
+    },
+    "classDescription": {
+      "type": "string"
+    },
+    "classComments": {
+      "type": "string"
+    },
+    "classNotes": {
+      "type": "string"
+    },
+    "classRecordingPath": {
+      "type": "string"
+    },
+    "batchName": {
+      "type": "null"
+    },
+    "classScheduledDates": {
+      "type": "array",
+      "items": [
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "csId",
+    "batchId",
+    "classNo",
+    "classDate",
+    "classTopic",
+    "classStatus",
+    "classStaffId",
+    "classDescription",
+    "classComments",
+    "classNotes",
+    "classRecordingPath",
+    "batchName",
+    "classScheduledDates"
+  ]
+}
