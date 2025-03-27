@@ -16,6 +16,8 @@ Feature: Program Module API Testing
       | Program   |         4 |
       | Program   |         5 |
       | Program   |         6 |
+      | Program   |         15 |
+      | Program   |         16 |
       
 
   Scenario Outline: Get All Programs with Valid and Invalid Data
@@ -32,7 +34,7 @@ Feature: Program Module API Testing
 
     Examples: 
       | sheetName | Testcases |
-      | Program   |        11 |
+      | Program   |        8 |
 
   Scenario Outline: Get All Programs with Valid and Invalid byusers
     When User sends a GET request to fetch all programs by users from "<sheetName>" row <Testcases>
@@ -40,7 +42,7 @@ Feature: Program Module API Testing
 
     Examples: 
       | sheetName | Testcases |
-      | Program   |        15 |
+      | Program   |        9 |
 
   #updateByProgramID
   Scenario Outline: Validate updating a program by ID with various scenarios
@@ -49,7 +51,7 @@ Feature: Program Module API Testing
 
     Examples: 
       | SheetName | Testcases |
-      | Program   |        19 |
+      | Program   |        10 |
 
   #UpdateByProgramName
   Scenario Outline: Validate updating a program by Name with various scenarios
@@ -58,23 +60,23 @@ Feature: Program Module API Testing
 
     Examples: 
       | SheetName | Testcases |
-      | Program   |        24 |
-      | Program   |        29 |
-#
-  #DeletebyProgName
-  #Scenario Outline: Delete program by Name with various scenarios
-    #When User sends a Delete request with programname "<SheetName>" row <Testcases>
-    #Then Response status code should be displayed and Data should be deleted.
-#
-    #Examples: 
-      #| SheetName | Testcases |
-      #| Program   |        31 |
-#
-  #DeletebyProgId
-  #Scenario Outline: Delete program by ID with various scenarios
-    #When User sends a Delete request with programid "<SheetName>" row <Testcases>
-    #Then Response status code should be displayed and Data should be deleted.
-#
-    #Examples: 
-      #| SheetName | Testcases |
-      #| Program   |       34 |
+      | Program   |        11 |
+      | Program   |        12 |
+
+ # DeletebyProgName
+  Scenario Outline: Delete program by Name with various scenarios
+    When User sends a Delete request with programname "<SheetName>" row <Testcases>
+    Then Response status code should be displayed and Data should be deleted.
+
+    Examples: 
+      | SheetName | Testcases |
+      | Program   |        13 |
+
+ #DeletebyProgId
+  Scenario Outline: Delete program by ID with various scenarios
+    When User sends a Delete request with programid "<SheetName>" row <Testcases>
+    Then Response status code should be displayed and Data should be deleted.
+
+    Examples: 
+      | SheetName | Testcases |
+      | Program   |       14 |

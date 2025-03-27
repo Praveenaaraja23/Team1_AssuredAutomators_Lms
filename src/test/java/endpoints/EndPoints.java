@@ -77,6 +77,7 @@ public enum EndPoints {
 	
 	//logout end points
 			LOGOUT("/logoutlms");
+
 	
     
     private String endpoint;

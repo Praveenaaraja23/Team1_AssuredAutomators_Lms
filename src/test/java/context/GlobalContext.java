@@ -43,6 +43,10 @@ public class GlobalContext {
         programIds.add(programId);
     }
 //    
+   public static List<Integer> getProgramIds() {
+	    return programIds;  // Returns the list of stored program IDs
+	}
+   
    public static int getProgramId(int index) {
        return getByIndex(programIds, index);
    }
