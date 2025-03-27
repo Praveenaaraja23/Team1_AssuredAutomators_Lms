@@ -1,4 +1,4 @@
-
+@lms @login
 Feature: User Login
 
   Background: 

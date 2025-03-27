@@ -1,4 +1,4 @@
-@user
+@lms @user
 Feature: User
 
   Background:
