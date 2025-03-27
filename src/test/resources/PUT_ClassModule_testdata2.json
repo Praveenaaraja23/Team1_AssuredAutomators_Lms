@@ -1,0 +1,61 @@
+[{
+      "batchId":"8449",
+      "classNo":"1",
+      "classDate":"2025-03-26T19:04:41.220Z",
+      "classTopic":"AI and ML March",
+      "classStatus":"string",
+      "classStaffId":"U25",
+      "classDescription":"String",
+      "classComments":" ",
+      "classNotes":"string",
+      "classRecordingPath":"string",
+      "classScheduledDates":[
+         "2025-03-28T19:04:41.220Z"
+      ]
+   },
+   {
+      "batchId":"8449",
+      "classNo":"1",
+      "classDate":"2025-03-26T19:04:41.220Z",
+      "classTopic":"AI and ML and API",
+      "classStatus":"string",
+      "classStaffId":"U25",
+      "classDescription":"String",
+      "classComments":" ",
+      "classNotes":"string",
+      "classRecordingPath":"string",
+      "classScheduledDates":[
+         "2025-03-28T19:04:41.220Z"
+      ]
+   },
+   {
+      "batchId":"84249",
+      "classNo":"10",
+      "classDate":"2025-03-26T19:04:41.220Z",
+      "classTopic":null,
+      "classStatus":"string",
+      "classStaffId":"U0299",
+      "classDescription":"String",
+      "classComments":" ",
+      "classNotes":"string",
+      "classRecordingPath":"string",
+      "classScheduledDates":[
+         "2025-03-289:04:41.220Z"
+      ]
+   },
+   {
+      "batchId":"",
+      "classNo":"",
+      "classDate":"",
+      "classTopic":null,
+      "classStatus":"string",
+      "classStaffId":"",
+      "classDescription":"String",
+      "classComments":" ",
+      "classNotes":"string",
+      "classRecordingPath":"string",
+      "classScheduledDates":[
+         "2025-03-289:04:41.220Z"
+      ]
+   }
+   ]

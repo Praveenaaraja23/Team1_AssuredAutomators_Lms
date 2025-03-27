@@ -1,25 +1,80 @@
+@ProgramModule
+Feature: Program Module API Testing
 
-@tag
-Feature: Title of your feature
-  I want to use this template for my feature file
+  Background: 
+    Given Admin logs in with valid credentials and Admin sets Authorization
 
-  @tag1
-  Scenario: Title of your scenario
-    Given I want to write a step with precondition
-    And some other precondition
-    When I complete action
-    And some other action
-    And yet another action
-    Then I validate the outcomes
-    And check more outcomes
-
-  @tag2
-  Scenario Outline: Title of your scenario outline
-    Given I want to write a step with <name>
-    When I check for the <value> in step
-    Then I verify the <status> in step
+  Scenario Outline: Add New Program with Valid and Invalid Data with Authorized User
+    When User sends a POST request with data from "<sheetName>" row <Testcases>
+    Then Response status code should be displayed with with status Message
 
     Examples: 
-      | name  | value | status  |
-      | name1 |     5 | success |
-      | name2 |     7 | Fail    |
+      | sheetName | Testcases |
+      | Program   |         1 |
+      | Program   |         2 |
+      | Program   |         3 |
+      | Program   |         4 |
+      | Program   |         5 |
+      | Program   |         6 |
+      
+
+  Scenario Outline: Get All Programs with Valid and Invalid Data
+    When User sends a GET request to fetch all programs from "<sheetName>" row <Testcases>
+    Then Response status code should be displayed with status Message
+
+    Examples: 
+      | sheetName | Testcases |
+      | Program   |         7 |
+
+  Scenario Outline: Get Program by ProgramId with Valid Data
+    When User sends a GET request to fetch program by valid ProgramId from "<sheetName>" row <Testcases>
+    Then Response status code should be displayed with Response body containing program details
+
+    Examples: 
+      | sheetName | Testcases |
+      | Program   |        11 |
+
+  Scenario Outline: Get All Programs with Valid and Invalid byusers
+    When User sends a GET request to fetch all programs by users from "<sheetName>" row <Testcases>
+    Then Response status code should be displayed with status Message
+
+    Examples: 
+      | sheetName | Testcases |
+      | Program   |        15 |
+
+  #updateByProgramID
+  Scenario Outline: Validate updating a program by ID with various scenarios
+    When User sends a PUT request with programid "<SheetName>" row <Testcases>
+    Then Response status code should be displayed and programId should be saved for validuser.
+
+    Examples: 
+      | SheetName | Testcases |
+      | Program   |        19 |
+
+  #UpdateByProgramName
+  Scenario Outline: Validate updating a program by Name with various scenarios
+    When User sends a PUT request with programName "<SheetName>" row <Testcases>
+    Then Response status code should be displayed and programName should be saved for validuser.
+
+    Examples: 
+      | SheetName | Testcases |
+      | Program   |        24 |
+      | Program   |        29 |
+#
+  #DeletebyProgName
+  #Scenario Outline: Delete program by Name with various scenarios
+    #When User sends a Delete request with programname "<SheetName>" row <Testcases>
+    #Then Response status code should be displayed and Data should be deleted.
+#
+    #Examples: 
+      #| SheetName | Testcases |
+      #| Program   |        31 |
+#
+  #DeletebyProgId
+  #Scenario Outline: Delete program by ID with various scenarios
+    #When User sends a Delete request with programid "<SheetName>" row <Testcases>
+    #Then Response status code should be displayed and Data should be deleted.
+#
+    #Examples: 
+      #| SheetName | Testcases |
+      #| Program   |       34 |
