@@ -1,7 +1,8 @@
-@class2 
+@class2
 Feature: Class feature
 
-  Background: Admin sets Authorization to Bearer Token.
+  Background: 
+    Given Admin sets Authorization to Bearer Token in class_module2
 
   @ClassModule_StaffID1
   Scenario Outline: Check if admin able to retrieve all Classes with valid StaffId (allclasses by staffId)

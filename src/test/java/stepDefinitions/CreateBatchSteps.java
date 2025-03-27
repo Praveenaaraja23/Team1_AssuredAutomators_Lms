@@ -41,41 +41,44 @@ public class CreateBatchSteps {
 	@Given("Admin creates POST Request with valid data in request body for create batch")
 	public void admin_creates_post_request_with_valid_data_in_request_body_for_create_batch() {
 		LoggerLoad.info("Admin sets post for create batch request");
-		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
+		endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 	}
 
 	@When("Admin sends HTTPS Request with data from row {string} for create batch")
 	public void admin_sends_https_request_with_data_from_row_for_create_batch(String scenarioName)
 			throws InvalidFormatException, IOException {
 		LoggerLoad.info("Scenario Name: " + scenarioName);
-		
-		//try {
-			List<Map<String, String>> batchData = ExcelReader.getData(ConfigReader.getProperty("excelPath"), "Batch");
-			for (Map<String, String> row : batchData) {
-				if (row.get("Scenario").equalsIgnoreCase(scenarioName)) {
-					
-					Batch batch = new Batch();
-					batch.setbatchDescription(row.get("BatchDescription"));
-					//batch.setbatchName(row.get("BatchName"));
-					batch.setbatchName(generateRandomString());
-					batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
-					batch.setbatchStatus(row.get("BatchStatus"));
-					batch.setprogramId(Integer.parseInt(row.get("ProgramId")));// To do get Program id from context
-					
-					Response response = request.given().contentType("application/json").body(batch).log().body()
-							.post(endPoint);
 
-					scenarioContext.setResponse(response);
-					scenarioContext.setRowData(row);
+		// try {
+		List<Map<String, String>> batchData = ExcelReader.getData(ConfigReader.getProperty("excelPath"), "Batch");
+		for (Map<String, String> row : batchData) {
+			if (row.get("Scenario").equalsIgnoreCase(scenarioName)) {
 
-					LoggerLoad.info("Status Code: " + response.getStatusCode());
-					if(response.getStatusCode() != 401 && response.getStatusCode() != 404) {
-						LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
-					}
+				Batch batch = new Batch();
+				batch.setbatchDescription(row.get("BatchDescription"));
+				batch.setbatchName(row.get("BatchName"));
+				//batch.setbatchName(generateRandomString());
+				batch.setbatchNoOfClasses(Integer.parseInt(row.get("NoOfClasses")));
+				batch.setbatchStatus(row.get("BatchStatus"));
+				if(scenarioName.equals("CreateBatchWithEmptyProgramId") || scenarioName.equals("CreateBatchWithInactiveProgramId"))
+					batch.setprogramId(Integer.parseInt(row.get("ProgramId")));
+				else
+					batch.setprogramId(GlobalContext.getProgramId(0));
 
-					break;
+				Response response = request.given().contentType("application/json").body(batch).log().body()
+						.post(endPoint);
+
+				scenarioContext.setResponse(response);
+				scenarioContext.setRowData(row);
+
+				LoggerLoad.info("Status Code: " + response.getStatusCode());
+				if (response.getStatusCode() != 401 && response.getStatusCode() != 404) {
+					LoggerLoad.info("Status Message: " + response.jsonPath().getString("message"));
 				}
+
+				break;
 			}
+		}
 //		} catch (Exception e) {
 //			LoggerLoad.error("Exception :"+e.getMessage());
 //		}
@@ -84,73 +87,74 @@ public class CreateBatchSteps {
 
 	@Then("the response status should be equal to ExpectedStatus for create batch")
 	public void the_response_status_should_be_equal_to_expected_status_for_create_batch() {
+		Response response = scenarioContext.getResponse();
 		int expStatusCode = Integer.parseInt(scenarioContext.getRowData().get("ExpectedStatusCode"));
-		int actStatusCode = scenarioContext.getResponse().getStatusCode();
-		
+		int actStatusCode = response.getStatusCode();
+
 		String expContentType = scenarioContext.getRowData().get("ContentType");
 		ResponseValidator.validateStatusCode(actStatusCode, expStatusCode);
-		ResponseValidator.validateContentType(scenarioContext.getResponse().getContentType(), expContentType);
+		ResponseValidator.validateContentType(response.getContentType(), expContentType);
 
 		if (expStatusCode == 201 && actStatusCode == 201) {
-			int batchId = Integer.parseInt(scenarioContext.getResponse().jsonPath().getString("batchId"));
-			String batchName = scenarioContext.getResponse().jsonPath().getString("batchName");
-			
+			int batchId = Integer.parseInt(response.jsonPath().getString("batchId"));
+			String batchName = response.jsonPath().getString("batchName");
+
 			GlobalContext.addBatchId(batchId);
 			GlobalContext.setBatchName(batchName);
 			LoggerLoad.info("batchId :" + batchId);
 			LoggerLoad.info("batchName :" + batchName);
-			
-			
-			  JsonPath jsonPath = scenarioContext.getResponse().jsonPath();
-			  Map<String, String> expRow = scenarioContext.getRowData();
-			  
+
+			JsonPath jsonPath = response.jsonPath();
+			Map<String, String> expRow = scenarioContext.getRowData();
+			// Validate schema
+			ResponseValidator.validateJsonSchema(response, "Batch_schema.json");
+
 			// Validate Data type
-			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchId", Integer.class);
-			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchName", String.class);
-			//ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchDescription", String.class);
-			ResponseValidator.validateDataType(scenarioContext.getResponse(), "batchStatus", String.class);
-			ResponseValidator.validateDataType(scenarioContext.getResponse(), "programName", String.class);
-			ResponseValidator.validateDataType(scenarioContext.getResponse(),  "batchNoOfClasses", Integer.class);
-			ResponseValidator.validateDataType(scenarioContext.getResponse(), "programId", Integer.class);
-			
+			ResponseValidator.validateDataType(response, "batchId", Integer.class);
+			ResponseValidator.validateDataType(response, "batchName", String.class);
+			// ResponseValidator.validateDataType(response, "batchDescription", String.class);
+			ResponseValidator.validateDataType(response, "batchStatus", String.class);
+			ResponseValidator.validateDataType(response, "programName", String.class);
+			ResponseValidator.validateDataType(response, "batchNoOfClasses", Integer.class);
+			ResponseValidator.validateDataType(response, "programId", Integer.class);
+
 			// Validate Data
 			ResponseValidator.validateData(jsonPath.getString("batchName"), expRow.get("BatchName"));
 			ResponseValidator.validateData(jsonPath.getString("batchDescription"), expRow.get("BatchDescription"));
 			ResponseValidator.validateData(jsonPath.getString("batchNoOfClasses"), expRow.get("NoOfClasses"));
 			ResponseValidator.validateData(jsonPath.getString("batchStatus"), expRow.get("BatchStatus"));
-		    //ResponseValidator.validateData(jsonPath.getString("programName"), expRow.get("programName"));
-			ResponseValidator.validateData(jsonPath.getString("programId"), expRow.get("ProgramId"));
-		}		
+			ResponseValidator.validateData(jsonPath.getString("programId"), String.valueOf(GlobalContext.getProgramId(0)));
+		}
+
 	}
-	
-	//No auth
+
+	// No auth
 	@Given("Admin sets Authorization to No Auth, creates POST Request with valid data in request body for create batch")
 	public void admin_sets_authorization_to_no_auth_creates_post_request_with_valid_data_in_request_body_for_create_batch() {
-		 endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
+		endPoint = ConfigReader.getBaseUrl() + EndPoints.CREATE_BATCH.getEndpoint();
 		request = RestAssured.given();
 	}
-	
+
 	@Given("Admin creates POST Request  with valid data in request body with invalid endpoint for create batch")
 	public void admin_creates_post_request_with_valid_data_in_request_body_with_invalid_endpoint_for_create_batch() {
 		LoggerLoad.info("Admin creates POST Request  with valid data in request body with invalid endpoint");
-		 endPoint = ConfigReader.getBaseUrl()+"1" + EndPoints.CREATE_BATCH.getEndpoint();
+		endPoint = ConfigReader.getBaseUrl() + "1" + EndPoints.CREATE_BATCH.getEndpoint();
 	}
-	
-	//This should be removed in final submission
-	public static String generateRandomString() {
-        String prefix = "Java";
-        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        
-        // StringBuilder to append the initial "Java"
-        StringBuilder stringBuilder = new StringBuilder(prefix);
 
-        // Generate remaining 6 characters
-        for (int i = 0; i < 6; i++) {
-            char randomChar = alphanumeric.charAt(random.nextInt(alphanumeric.length()));
-            stringBuilder.append(randomChar);
-        }
-        
-        return stringBuilder.toString();
-    }
+	// This should be removed in final submission
+	/*
+	 * public static String generateRandomString() { String prefix = "Java"; String
+	 * alphanumeric =
+	 * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; Random
+	 * random = new Random();
+	 * 
+	 * // StringBuilder to append the initial "Java" StringBuilder stringBuilder =
+	 * new StringBuilder(prefix);
+	 * 
+	 * // Generate remaining 6 characters for (int i = 0; i < 6; i++) { char
+	 * randomChar = alphanumeric.charAt(random.nextInt(alphanumeric.length()));
+	 * stringBuilder.append(randomChar); }
+	 * 
+	 * return stringBuilder.toString(); }
+	 */
 }

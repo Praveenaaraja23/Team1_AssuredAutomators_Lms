@@ -6,7 +6,7 @@ Feature: Get Batch
     Given Admin sets Authorization to Bearer Token for GET batch request 
 
     Scenario: Check if admin able to retrieve all batches  with valid LMS API
-
+    
     Given Admin creates GET Request for get batches 
     When Admin sends HTTPS Request with endpoint for get batches 
     Then Admin receives 200 OK Status with response body for get batches.
@@ -24,6 +24,10 @@ Feature: Get Batch
     When Admin sends HTTPS Request with No auth, valid endpoint for get batches
     Then Admin receives 401 status with error message Unauthorized for get batches
     
- 
+ 	  Scenario: Check if admin able to retrieve all batches  with search string
+    
+    Given Admin creates GET Request for get batches with search string
+    When Admin sends HTTPS Request with endpoint for get batches with search string "AWS"
+    Then Admin receives 200 OK Status with response body for get batches with search string "AWS".
 
      
